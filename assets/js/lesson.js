@@ -67,7 +67,7 @@ function fetchLesson(id) {
         return;
       }
 
-      document.title = "مركز الدروس — " + lesson.title;
+      document.title = "Lessons Hub — " + lesson.title;
       titleEl.textContent = lesson.title;
       downloadBtn.href = lesson.pdf_url;
 
@@ -93,7 +93,10 @@ function fetchLesson(id) {
         showError();
       });
 
-      frameEl.src = lesson.pdf_url;
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+frameEl.src = isMobile
+  ? `https://docs.google.com/viewer?url=${encodeURIComponent(lesson.pdf_url)}&embedded=true`
+  : lesson.pdf_url;
     })
     .catch(function () {
       titleEl.textContent = "الدرس غير متاح";

@@ -301,18 +301,18 @@ skeletonToggle.addEventListener("click", () => {
   demoLoading = !demoLoading;
   if (demoLoading) {
     setSkeletonLoading(true, 6);
-    skeletonToggle.textContent = "✅ عرض المواد";
+    skeletonToggle.textContent = "⏳ عرض الهيكل";
     // Auto-restore after a short demo delay
     setTimeout(() => {
       demoLoading = false;
       setSkeletonLoading(false);
       applyFilter();
-      skeletonToggle.textContent = "⏳ عرض الهيكل";
+      skeletonToggle.textContent = "✅ عرض الدروس";
     }, 1800);
   } else {
     setSkeletonLoading(false);
     applyFilter();
-    skeletonToggle.textContent = "⏳ عرض الهيكل";
+    skeletonToggle.textContent = "✅ عرض الدروس";
   }
 });
 

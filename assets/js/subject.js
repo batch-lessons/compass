@@ -1,25 +1,12 @@
 /* ============================================================
    Batch Lessons Hub — subject.js
-   Lessons list for one subject (subject.html?id=xxx)
-   Dummy data + rendering + sort + search + animations
    ============================================================ */
 
-// Read the subject id from ?id=xxx — used later for the Supabase query.
-// For now the data is dummy, so this is only parsed and stored.
 const urlParams  = new URLSearchParams(window.location.search);
 const subjectId  = urlParams.get("id");
-// TODO: use subjectId when fetching the real subject + lessons from Supabase
 
-// ------------------------------------------------------------
-// TODO: replace with Supabase fetch — see loadLessons()
-// Fields shaped like the future DB columns:
-//   id, subject_id, lesson_number, title, pdf_url, created_at
-// ------------------------------------------------------------
 let LESSONS = [];
 
-// ------------------------------------------------------------
-// DOM refs
-// ------------------------------------------------------------
 const list           = document.getElementById("lessons-list");
 const skeletonList   = document.getElementById("skeleton-list");
 const emptyState     = document.getElementById("empty-state");
@@ -28,16 +15,23 @@ const sortSelect     = document.getElementById("sort-select");
 const lessonsCount   = document.getElementById("lessons-count");
 const skeletonToggle = document.getElementById("skeleton-toggle");
 
-// ------------------------------------------------------------
-// Rendering
-// ------------------------------------------------------------
 function lessonItemHTML(lesson) {
+  const videoButton = lesson.video_url ? `
+    <a href="${lesson.video_url}" target="_blank" rel="noopener"
+       class="btn-outline inline-flex items-center gap-2 bg-white border-2 border-gray-200 hover:border-primary hover:text-primary text-ink text-sm font-bold px-4 py-2.5 rounded-xl transition-colors duration-200">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M15 10l4.55-2.276A1 1 0 0 1 21 8.618v6.764a1 1 0 0 1-1.45.894L15 14M5 18h8a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      المحاضرة
+    </a>` : "";
+
   return `
     <article class="lesson-item bg-surface rounded-card shadow-card p-5 flex flex-col sm:flex-row sm:items-center gap-4"
              data-title="${lesson.title}">
       <span class="lesson-number-badge shrink-0 text-xs font-extrabold text-primary bg-primary-soft px-3.5 py-2 rounded-full">الدرس ${lesson.lesson_number}</span>
       <h3 class="flex-1 text-base sm:text-lg font-bold text-ink leading-relaxed">${lesson.title}</h3>
-      <div class="flex items-center gap-2 shrink-0">
+      <div class="flex items-center gap-2 shrink-0 flex-wrap">
+        ${videoButton}
         <a href="lesson.html?id=${lesson.id}"
            class="btn-primary inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-bold px-4 py-2.5 rounded-xl shadow-card">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -64,22 +58,15 @@ function renderLessons(lessons) {
     : "";
 }
 
-// Staggered entrance for freshly rendered items (re-runnable).
-// Restart-safe: strips .lesson-in, forces reflow, then re-staggers at 90ms intervals.
 function animateLessonsIn() {
   const items = [...list.querySelectorAll(".lesson-item")];
   items.forEach((item) => item.classList.remove("lesson-in"));
-  void list.offsetWidth; // flush styles so the restart actually animates
+  void list.offsetWidth;
   items.forEach((item, i) => {
     setTimeout(() => item.classList.add("lesson-in"), 90 * i);
   });
 }
 
-// ------------------------------------------------------------
-// Loading / skeleton state
-// setSkeletonLoading(true)  → show list-shaped pulsing placeholders
-// setSkeletonLoading(false) → show real lessons
-// ------------------------------------------------------------
 function skeletonItemHTML() {
   return `
     <div class="skeleton-card lesson-skeleton flex items-center gap-4" aria-hidden="true">
@@ -108,11 +95,8 @@ function setSkeletonLoading(isLoading, skeletonCount = 6) {
   }
 }
 
-// ------------------------------------------------------------
-// Search + sort + empty state
-// ------------------------------------------------------------
 let currentQuery = "";
-let currentSort  = "default"; // "default" (lesson_number asc) | "newest" (created_at desc)
+let currentSort  = "default";
 
 function sortLessons(lessons) {
   const sorted = [...lessons];
@@ -126,16 +110,11 @@ function sortLessons(lessons) {
 
 function applyFilter() {
   const q = currentQuery.trim();
-  const filtered = q
-    ? LESSONS.filter((l) => l.title.includes(q))
-    : LESSONS;
-
+  const filtered = q ? LESSONS.filter((l) => l.title.includes(q)) : LESSONS;
   renderLessons(sortLessons(filtered));
-
   const isEmpty = filtered.length === 0;
   emptyState.classList.toggle("hidden", !isEmpty);
   emptyState.classList.toggle("flex", isEmpty);
-
   animateLessonsIn();
 }
 
@@ -145,7 +124,7 @@ searchInput.addEventListener("input", (e) => {
   searchTimer = setTimeout(() => {
     currentQuery = e.target.value;
     applyFilter();
-  }, 160); // small debounce — same pattern as home.js
+  }, 160);
 });
 
 sortSelect.addEventListener("change", (e) => {
@@ -153,23 +132,15 @@ sortSelect.addEventListener("change", (e) => {
   applyFilter();
 });
 
-// ------------------------------------------------------------
-// Page-load staged entrance: header → heading row → lessons
-// ------------------------------------------------------------
 function entranceTimeline() {
   const header = document.getElementById("site-header");
   header.classList.add("anim-init");
-
   document.querySelectorAll("#lessons .reveal").forEach((el, i) => {
     setTimeout(() => el.classList.add("revealed"), 220 + i * 110);
   });
-
   setTimeout(() => animateLessonsIn(), 450);
 }
 
-// ------------------------------------------------------------
-// Scroll reveal (Intersection Observer, no libraries)
-// ------------------------------------------------------------
 function initScrollReveal() {
   const observer = new IntersectionObserver(
     (entries) => {
@@ -182,54 +153,11 @@ function initScrollReveal() {
     },
     { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
   );
-
   document.querySelectorAll(".reveal").forEach((el) => {
     if (!el.closest("#lessons")) observer.observe(el);
   });
 }
 
-// ------------------------------------------------------------
-// Modals (placeholder shells — same behavior as home.js)
-// ------------------------------------------------------------
-function initModals() {
-  const openModal = (id) => {
-    const modal = document.getElementById(id);
-    if (!modal) return;
-    modal.classList.remove("hidden");
-    modal.classList.add("open");
-    document.body.style.overflow = "hidden";
-  };
-
-  const closeModal = (modal) => {
-    modal.classList.remove("open");
-    setTimeout(() => {
-      modal.classList.add("hidden");
-      document.body.style.overflow = "";
-    }, 300); // match CSS transition
-  };
-
-  document.querySelectorAll("[data-modal]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      closeMobileMenu();
-      openModal(btn.dataset.modal);
-    });
-  });
-
-  document.querySelectorAll(".modal-shell").forEach((modal) => {
-    modal.querySelector(".modal-backdrop").addEventListener("click", () => closeModal(modal));
-    modal.querySelector(".modal-close").addEventListener("click", () => closeModal(modal));
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      document.querySelectorAll(".modal-shell.open").forEach(closeModal);
-    }
-  });
-}
-
-// ------------------------------------------------------------
-// Mobile menu
-// ------------------------------------------------------------
 const mobileMenuBtn = document.getElementById("mobile-menu-btn");
 const mobileMenu    = document.getElementById("mobile-menu");
 
@@ -241,36 +169,28 @@ mobileMenuBtn.addEventListener("click", () => {
   mobileMenu.classList.toggle("hidden");
 });
 
-// ------------------------------------------------------------
-// Skeleton toggle (demo/test button in the heading row)
-// ------------------------------------------------------------
 let demoLoading = false;
 skeletonToggle.addEventListener("click", () => {
   demoLoading = !demoLoading;
   if (demoLoading) {
     setSkeletonLoading(true, 6);
-    skeletonToggle.textContent = "✅ عرض الدروس";
-    // Auto-restore after a short demo delay
+    skeletonToggle.textContent = "⏳ عرض الهيكل";
     setTimeout(() => {
       demoLoading = false;
       setSkeletonLoading(false);
       applyFilter();
-      skeletonToggle.textContent = "⏳ عرض الهيكل";
+      skeletonToggle.textContent = "✅ عرض الدروس";
     }, 1800);
   } else {
     setSkeletonLoading(false);
     applyFilter();
-    skeletonToggle.textContent = "⏳ عرض الهيكل";
+    skeletonToggle.textContent = "✅ عرض الدروس";
   }
 });
 
-// ------------------------------------------------------------
-// Init
-// ------------------------------------------------------------
 async function loadLessons() {
   setSkeletonLoading(true, 6);
 
-  // جلب اسم المادة الحقيقي
   const { data: subjectData } = await supabaseClient
     .from("subjects")
     .select("title")
@@ -281,10 +201,9 @@ async function loadLessons() {
     document.getElementById("subject-title").textContent = subjectData.title;
   }
 
-  // جلب الدروس
   const { data, error } = await supabaseClient
     .from("lessons")
-    .select("id, subject_id, lesson_number, title, pdf_url, created_at")
+    .select("id, subject_id, lesson_number, title, pdf_url, video_url, created_at")
     .eq("subject_id", subjectId);
 
   if (error) {
@@ -299,8 +218,7 @@ async function loadLessons() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  loadLessons();           // renders dummy lessons (sorted by lesson_number)
-  entranceTimeline();      // staged load-in animation
-  initScrollReveal();      // below-the-fold reveals
-  initModals();            // modal shells
+  loadLessons();
+  entranceTimeline();
+  initScrollReveal();
 });

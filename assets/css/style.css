@@ -317,10 +317,202 @@ body {
   box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
 }
 
+/* ---------- 11. Auth page (admin/login.html) ---------- */
+.auth-card {
+  animation-name: riseIn;
+  animation-duration: 0.7s;
+}
+
+.auth-input {
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.3s ease;
+}
+
+.auth-input:focus {
+  background: #ffffff;
+  border-color: #4F46E5;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+}
+
+/* ---------- 12. Admin dashboard (admin/dashboard.html) ---------- */
+
+/* Tabs */
+.dash-tab {
+  padding: 0.6rem 1.4rem;
+  border-radius: 0.6rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #6B7280;
+  white-space: nowrap;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.dash-tab:hover {
+  color: #4F46E5;
+}
+
+.dash-tab.active {
+  background: #4F46E5;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.28);
+}
+
+/* Dashboard tables */
+.dash-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.dash-table th {
+  text-align: right;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #6B7280;
+  background: #FAFAFA;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid #F3F4F6;
+  white-space: nowrap;
+}
+
+.dash-table td {
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid #F3F4F6;
+  vertical-align: middle;
+}
+
+.dash-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.dash-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.dash-table tbody tr:hover {
+  background: #FAFAFA;
+}
+
+/* Row action buttons */
+.dash-btn-primary,
+.dash-btn-ghost,
+.dash-btn-danger {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.45rem 0.9rem;
+  border-radius: 0.6rem;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s var(--ease-soft);
+}
+
+.dash-btn-primary {
+  background: #4F46E5;
+  color: #ffffff;
+}
+
+.dash-btn-primary:hover {
+  background: #4338CA;
+  transform: translateY(-1px);
+}
+
+.dash-btn-ghost {
+  background: #ffffff;
+  border: 1.5px solid #E5E7EB;
+  color: #1F2937;
+}
+
+.dash-btn-ghost:hover {
+  border-color: #4F46E5;
+  color: #4F46E5;
+}
+
+.dash-btn-danger {
+  background: #ffffff;
+  border: 1.5px solid #FECACA;
+  color: #DC2626;
+}
+
+.dash-btn-danger:hover {
+  background: #FEF2F2;
+  border-color: #DC2626;
+}
+
+/* Inline edit inputs */
+.edit-input {
+  background: #F9FAFB;
+  border: 1.5px solid #4F46E5;
+  border-radius: 0.6rem;
+  font-size: 0.875rem;
+  padding: 0.45rem 0.75rem;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
 #mobile-menu-btn {
   margin-inline-start: auto;
 }
-/* ---------- 11. Lesson viewer (lesson.html) ---------- */
+
+/* Toast */
+#toast {
+  animation: riseIn 0.4s var(--ease-out-expo);
+}
+
+/* ---------- Kill the 560px min-width lock on mobile ---------- */
+@media (max-width: 640px) {
+  .dash-table {
+    min-width: 0 !important;
+  }
+
+  .dash-table {
+    font-size: 0.65rem;
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  .dash-table th,
+  .dash-table td {
+    padding: 0.35rem 0.25rem;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .dash-table .dash-btn-danger,
+  .dash-table .dash-btn-ghost,
+  .dash-table .dash-btn-primary {
+    padding: 0.25rem 0.4rem;
+    font-size: 0.6rem;
+    white-space: nowrap;
+  }
+
+  .dash-table td.text-2xl {
+    font-size: 0.9rem;
+  }
+
+  .dash-table .rounded-full {
+    padding: 0.15rem 0.5rem !important;
+    font-size: 0.6rem !important;
+  }
+}
+
+/* Fix: flex-1 children need min-height:0 to scroll instead of growing */
+#fb-list {
+  min-height: 0;
+}
+
+.modal-panel {
+  min-height: 0;
+}
+
+/* ---------- Lesson viewer (lesson.html) ---------- */
 .lesson-topbar {
   box-shadow: 0 1px 0 rgba(17, 24, 39, 0.06);
 }
