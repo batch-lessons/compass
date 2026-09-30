@@ -60,6 +60,16 @@
         جارٍ التحميل…
       </h1>
 
+      <!-- Fullscreen toggle -->
+      <button id="fullscreen-btn" aria-label="ملء الشاشة" class="icon-btn shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-muted hover:bg-gray-100 hover:text-primary transition-colors">
+        <svg id="fullscreen-icon-expand" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M4 8V5a1 1 0 0 1 1-1h3M20 8V5a1 1 0 0 0-1-1h-3M4 16v3a1 1 0 0 0 1 1h3M20 16v3a1 1 0 0 1-1 1h-3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <svg id="fullscreen-icon-collapse" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M9 4v3a1 1 0 0 1-1 1H5M15 4v3a1 1 0 0 0 1 1h3M9 20v-3a1 1 0 0 0-1-1H5M15 20v-3a1 1 0 0 1 1-1h3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
       <!-- Download -->
       <a id="download-btn" href="#" download target="_blank" rel="noopener"
          class="icon-btn btn-primary shrink-0 inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-bold rounded-xl px-3 sm:px-4 py-2 shadow-card">

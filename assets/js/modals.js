@@ -163,16 +163,31 @@ const shell = (id, title, body, extraPanel = "") => `
     requestAnimationFrame(() => m.classList.add("open"));
     document.body.style.overflow = "hidden";
   };
+  const resetViewportStyles = (m) => {
+    const p = m.querySelector(".modal-panel");
+    m.style.top = m.style.height = m.style.bottom = "";
+    if (p) p.style.maxHeight = p.style.height = p.style.borderRadius = "";
+  };
+
   const fallbackClose = (id) => {
     const m = document.getElementById(id);
     if (!m) return;
     m.classList.remove("open");
-    setTimeout(() => { m.style.display = ""; m.classList.add("hidden"); }, 300);
+    setTimeout(() => {
+      m.style.display = "";
+      m.classList.add("hidden");
+      resetViewportStyles(m);
+    }, 300);
     document.body.style.overflow = "";
   };
-  const open = (id) => { (typeof window.openModal === "function" ? window.openModal : fallbackOpen)(id); onOpened(id); };
-  const close = (id) => (typeof window.closeModal === "function" ? window.closeModal : fallbackClose)(id);
 
+  const open = (id) => { (typeof window.openModal === "function" ? window.openModal : fallbackOpen)(id); onOpened(id); };
+  const close = (id) => {
+    (typeof window.closeModal === "function" ? window.closeModal : fallbackClose)(id);
+    const m = document.getElementById(id);
+    if (m) setTimeout(() => resetViewportStyles(m), 320);
+  };
+  
   document.addEventListener("click", (e) => {
     const c = e.target.closest("[data-close-modal]");
     if (c) { e.preventDefault(); close(c.getAttribute("data-close-modal")); return; }

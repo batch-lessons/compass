@@ -103,3 +103,27 @@ frameEl.src = isMobile
       showError();
     });
 })();
+
+// ---------- Fullscreen toggle ----------
+(function () {
+  const btn = document.getElementById("fullscreen-btn");
+  if (!btn) return;
+  const expandIcon = document.getElementById("fullscreen-icon-expand");
+  const collapseIcon = document.getElementById("fullscreen-icon-collapse");
+
+  function updateIcon() {
+    const isFs = !!document.fullscreenElement;
+    expandIcon.classList.toggle("hidden", isFs);
+    collapseIcon.classList.toggle("hidden", !isFs);
+  }
+
+  btn.addEventListener("click", () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  });
+
+  document.addEventListener("fullscreenchange", updateIcon);
+})();
