@@ -187,7 +187,7 @@ const shell = (id, title, body, extraPanel = "") => `
     const m = document.getElementById(id);
     if (m) setTimeout(() => resetViewportStyles(m), 320);
   };
-  
+
   document.addEventListener("click", (e) => {
     const c = e.target.closest("[data-close-modal]");
     if (c) { e.preventDefault(); close(c.getAttribute("data-close-modal")); return; }
@@ -348,4 +348,28 @@ form.addEventListener("submit", async (e) => {
 
   // Expose for other scripts if needed
   window.BLHModals = { open, close, CONTACT_LINKS };
+})();
+
+// ---------- Fullscreen toggle ----------
+(function () {
+  const btn = document.getElementById("fullscreen-btn");
+  if (!btn) return;
+  const expandIcon = document.getElementById("fullscreen-icon-expand");
+  const collapseIcon = document.getElementById("fullscreen-icon-collapse");
+
+  function updateIcon() {
+    const isFs = !!document.fullscreenElement;
+    expandIcon.classList.toggle("hidden", isFs);
+    collapseIcon.classList.toggle("hidden", !isFs);
+  }
+
+  btn.addEventListener("click", () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  });
+
+  document.addEventListener("fullscreenchange", updateIcon);
 })();

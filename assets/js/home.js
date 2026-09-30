@@ -354,26 +354,49 @@ document.addEventListener("DOMContentLoaded", () => {
   initModals();            // modal shells
 });
 
-// ---------- Fullscreen toggle ----------
+// ---------- Fullscreen toggle (persists across page navigations) ----------
 (function () {
+  const FS_KEY = "lessonsHub_fullscreen";
   const btn = document.getElementById("fullscreen-btn");
-  if (!btn) return;
   const expandIcon = document.getElementById("fullscreen-icon-expand");
   const collapseIcon = document.getElementById("fullscreen-icon-collapse");
 
   function updateIcon() {
     const isFs = !!document.fullscreenElement;
-    expandIcon.classList.toggle("hidden", isFs);
-    collapseIcon.classList.toggle("hidden", !isFs);
+    if (expandIcon) expandIcon.classList.toggle("hidden", isFs);
+    if (collapseIcon) collapseIcon.classList.toggle("hidden", !isFs);
   }
 
-  btn.addEventListener("click", () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
-    } else {
-      document.exitFullscreen().catch(() => {});
-    }
+  function requestFs() {
+    return document.documentElement.requestFullscreen().catch(() => {});
+  }
+
+  if (btn) {
+    btn.addEventListener("click", () => {
+      if (!document.fullscreenElement) {
+        requestFs().then(() => sessionStorage.setItem(FS_KEY, "1"));
+      } else {
+        document.exitFullscreen().catch(() => {});
+        sessionStorage.removeItem(FS_KEY);
+      }
+    });
+  }
+
+  document.addEventListener("fullscreenchange", () => {
+    updateIcon();
+    if (!document.fullscreenElement) sessionStorage.removeItem(FS_KEY);
   });
 
-  document.addEventListener("fullscreenchange", updateIcon);
+  // Browser force-exits fullscreen on full page navigation (security behavior).
+  // If the user had it on, re-request it on the first click/tap in the new page
+  // — requestFullscreen only works inside a direct user-gesture handler.
+  if (sessionStorage.getItem(FS_KEY) === "1" && !document.fullscreenElement) {
+    const reEnter = () => {
+      requestFs().then(() => updateIcon());
+      document.removeEventListener("click", reEnter, true);
+      document.removeEventListener("touchend", reEnter, true);
+    };
+    document.addEventListener("click", reEnter, true);
+    document.addEventListener("touchend", reEnter, true);
+  }
 })();
