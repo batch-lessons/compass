@@ -2,6 +2,12 @@
   "use strict";
 
   // ---------- Editable data ----------
+  const OWNER_LINKS = [
+  { label: "واتساب", icon: "💬", url: "https://wa.me/249128604782" },
+  { label: "البريد الإلكتروني", icon: "📧", url: "mailto:althoughs980@gmail.com" },
+  { label: "إنستغرام", icon: "📷", url: "https://www.instagram.com/bo_ox.9?stkn=MXNleGlwcDFncnZrMg==" },
+  ];
+
   const CONTACT_LINKS = [
   { label: "واتساب", icon: "💬", url: "https://wa.me/249120723907" },
   { label: "البريد الإلكتروني", icon: "📧", url: "mailto:hamedhagalzen2009@gmail.com" },
@@ -84,8 +90,18 @@ const shell = (id, title, body, extraPanel = "") => `
     `
     <div class="flex-1 space-y-8 overflow-y-auto px-5 py-6">
       <div class="flex items-center gap-4">
+        <div class="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-primary-soft text-3xl">👑</div>
+        <div class="min-w-0">
+          <p class="text-xs font-bold text-primary">المالك</p>
+          <p class="text-lg font-extrabold text-ink">أحمد ياسر</p>
+          <p class="text-sm font-semibold text-muted" dir="ltr">bi5tm.9</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
         <div class="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-primary-soft text-3xl">📚</div>
         <div class="min-w-0">
+          <p class="text-xs font-bold text-primary">المطور</p>
           <p class="text-lg font-extrabold text-ink">محمد</p>
           <p class="text-sm font-semibold text-muted">Midorya / ميدوريا</p>
         </div>
@@ -108,7 +124,20 @@ const shell = (id, title, body, extraPanel = "") => `
       </section>
 
       <section>
-        ${sectionTitle("تواصل معي مباشرة")}
+        ${sectionTitle("تواصل مع المالك")}
+        <div class="flex flex-col gap-2.5">
+          ${OWNER_LINKS.map((c) => `
+            <a href="${esc(c.url)}" target="_blank" rel="noopener noreferrer"
+              class="btn-outline group flex items-center gap-3 rounded-card border border-gray-200 bg-white px-4 py-3 hover:border-primary hover:bg-primary-soft">
+              <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gray-50 text-xl group-hover:bg-white">${c.icon}</span>
+              <span class="flex-1 font-bold text-ink">${esc(c.label)}</span>
+              <svg class="h-4 w-4 text-muted group-hover:text-primary" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
+            </a>`).join("")}
+        </div>
+      </section>
+
+      <section>
+        ${sectionTitle("تواصل مع المطور")}
         <div class="flex flex-col gap-2.5">
           ${CONTACT_LINKS.map((c) => `
             <a href="${esc(c.url)}" target="_blank" rel="noopener noreferrer"
